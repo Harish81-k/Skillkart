@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <!-- Heading -->
+    <h2 class="text-center mb-4" style="color: #00ffe1; font-weight: 600;">
+        {% if user_role == 'student' %}
+            📚 All Courses
+        {% else %}
+            📚 All Approved Courses
+        {% endif %}
+    </h2>
+
+    <!-- Search Form -->
+    <form method="get" class="d-flex justify-content-center mb-4">
+        <input type="text" name="q" class="form-control w-50 me-2" placeholder="Search courses..." value="{{ query|default:'' }}">
+        <button type="submit" class="btn btn-info">Search</button>
+    </form>
+
+    {% if courses %}
+        <div class="row">
+            {% for course in courses %}
+                <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                    <div class="card shadow-lg rounded neon-card border-0 text-white p-3 w-100 position-relative">
+
+                        <!-- Image -->
+                        {% if course.image %}
+                        <img src="{{ course.image.url }}" alt="Course Image" class="rounded-circle mx-auto d-block mb-3" style="width: 60px; height: 60px; object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'images/default_course.jpg' %}" alt="Default Image" class="rounded-circle mx-auto d-block mb-3" style="width: 60px; height: 60px; object-fit: cover;">
+                        {% endif %}
+
+                        <!-- Fixed Height Body -->
+                        <div class="card-body d-flex flex-column justify-content-between" style="height: 250px;">
+                            <div>
+                                <h5 class="card-title text-info text-center">{{ course.title }}</h5>
+                                <p class="card-text text-light text-center">{{ course.description|truncatewords:20 }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom-right Button -->
+                        <a href="{% url 'course_detail' course.id %}" class="btn btn-outline-info position-absolute" style="bottom: 20px; right: 20px;">View Details</a>
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-warning">No courses found.</p>
+    {% endif %}
+</div>
+
+<!-- Neon Card Styling -->
+<style>
+    .neon-card {
+        background-color: #111;
+        color: #fff;
+        border: 1px solid #00ffe1;
+        box-shadow: 0 0 15px #00ffe1;
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+
+    .neon-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 25px #00ffe1;
+    }
+
+    .card-title, .card-text {
+        color: #fff;
+    }
+</style>
+{% endblock %}

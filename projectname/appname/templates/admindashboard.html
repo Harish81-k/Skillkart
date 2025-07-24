@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<style>
+    body {
+        background-color: #0d1117;
+        color: #00f7ff;
+        font-family: 'Poppins', sans-serif;
+    }
+    h2, h4 {
+        color: #00ffe1;
+        font-weight: bold;
+    }
+    .dashboard-container {
+        display: flex;
+        gap: 30px;
+    }
+    .sidebar {
+        width: 250px;
+        background-color: #111;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #0ff;
+    }
+    .sidebar img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 2px solid #00f7ff;
+        margin-bottom: 10px;
+    }
+    .sidebar h5 {
+        color: #0ff;
+    }
+    .content-area {
+        flex-grow: 1;
+    }
+    .btn-section {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    .btn-toggle {
+        background-color: #0ff;
+        color: #000;
+        border-radius: 5px;
+        padding: 8px 15px;
+        font-weight: 500;
+        box-shadow: 0 0 10px #0ff;
+        border: none;
+    }
+    .btn-toggle:hover {
+        background-color: #00ffe1;
+    }
+    .section {
+        display: none;
+    }
+    .section.active {
+        display: block;
+        animation: fadeIn 1s ease-in-out;
+    }
+    .manage-table {
+        margin-top: 20px;
+        background-color: #111;
+        color: #0ff;
+        border: 1px solid #0ff;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 0 15px #0ff;
+    }
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid #333;
+        text-align: center;
+    }
+    .alert-custom {
+        background-color: #112;
+        color: #0ff;
+        border: 1px solid #0ff;
+        box-shadow: 0 0 10px #0ff;
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">⚙️ Admin Dashboard</h2>
+    <div class="dashboard-container">
+        <div class="sidebar text-center">
+            <img src="{{ profile.profile_image.url }}" alt="Admin Profile" class="rounded-circle mb-2" style="width:100px; height:100px; object-fit:cover; border: 2px solid #00f7ff;">
+            <h5>{{ user.get_full_name }}</h5>
+            <p>{{ user.email }}</p>
+            <a href="{% url 'update_admin_profile' %}" class="btn btn-sm btn-outline-info">Update Profile</a>
+        </div>
+
+        <div class="content-area">
+            <div class="btn-section">
+                <button class="btn-toggle" onclick="showSection('students')">👩‍🎓 Students</button>
+                <button class="btn-toggle" onclick="showSection('staff')">🧑‍🏫 Staff</button>
+                <button class="btn-toggle" onclick="showSection('courses')">📚 Courses</button>
+            </div>
+
+            {% if messages %}
+                <div>
+                    {% for message in messages %}
+                        <div class="alert-custom">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div id="students" class="section active" data-aos="fade-up">
+                <div class="manage-table">
+                    <h4>👩‍🎓 Students</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td>{{ student.user.username }}</td>
+                                <td>{{ student.user.email }}</td>
+                                <td>{{ student.department }}</td>
+                                <td>
+                                    <a href="{% url 'delete_student' student.user.id %}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this student?')">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="staff" class="section" data-aos="fade-up">
+                <div class="manage-table">
+                    <h4>🧑‍🏫 Staff</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in staff %}
+                            <tr>
+                                <td>{{ s.user.username }}</td>
+                                <td>{{ s.user.email }}</td>
+                                <td>{{ s.department }}</td>
+                                <td>
+                                    <a href="{% url 'delete_staff' s.user.id %}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this staff member?')">Delete</a>
+                                    <a href="{% url 'update_staff' s.user.id %}" class="btn btn-sm btn-outline-info">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="courses" class="section" data-aos="fade-up">
+                <div class="manage-table">
+                    <h4>📚 Courses Pending Approval</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Course Title</th>
+                                <th>Description</th>
+                                <th>Uploaded By</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.description|truncatewords:15 }}</td>
+                                <td>{{ course.uploaded_by.username }}</td>
+                                <td>
+                                    {% if course.is_approved %}
+                                        <span class="text-success">Approved</span>
+                                    {% else %}
+                                        <span class="text-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if not course.is_approved %}
+                                    <a href="{% url 'approve_course' course.id %}" class="btn btn-sm btn-success"
+                                       onclick="return confirm('Approve this course?')">Approve</a>
+                                    {% endif %}
+                                    <a href="{% url 'delete_course' course.id %}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this course?')">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+<script>
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById(id).classList.add('active');
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 text-white" style="max-width: 700px;">
+    <h2 class="mb-4 text-center" style="color: #00ffe1;">Update Student Profile</h2>
+
+    {% if error_msg %}
+        <div class="alert alert-warning">{{ error_msg }}</div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="full_name" class="form-control" value="{{ student.full_name }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Mobile</label>
+                <input type="text" name="mobile" class="form-control" value="{{ student.mobile }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ student.email }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">College</label>
+                <input type="text" name="college" class="form-control" value="{{ student.college }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Branch</label>
+                <input type="text" name="branch" class="form-control" value="{{ student.branch }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Year</label>
+                <input type="text" name="year" class="form-control" value="{{ student.year }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Roll Number</label>
+                <input type="text" name="roll_number" class="form-control" value="{{ student.roll_number }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">DOB</label>
+                <input type="date" name="dob" class="form-control" value="{{ student.dob|date:'Y-m-d' }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Gender</label>
+                <select name="gender" class="form-select">
+                    <option value="M" {% if student.gender == "M" %}selected{% endif %}>Male</option>
+                    <option value="F" {% if student.gender == "F" %}selected{% endif %}>Female</option>
+                    <option value="O" {% if student.gender == "O" %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Address</label>
+                <textarea name="address" class="form-control">{{ student.address }}</textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">City</label>
+                <input type="text" name="city" class="form-control" value="{{ student.city }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">State</label>
+                <input type="text" name="state" class="form-control" value="{{ student.state }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Pincode</label>
+                <input type="text" name="pincode" class="form-control" value="{{ student.pincode }}">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Profile Image</label>
+                {% if student.image %}
+                    <img src="{{ student.image.url }}" alt="Profile Image" width="100" class="d-block mb-2">
+                {% endif %}
+                <input type="file" name="profile_image" class="form-control">
+            </div>
+        </div>
+        <div class="mt-4 text-center">
+            <button type="submit" class="btn btn-primary px-4">Update</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

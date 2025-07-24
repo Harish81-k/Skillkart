@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home | SkillKart{% endblock %}
+
+{% block content %}
+<style type="text/css">
+   .hero {
+      height: 100vh;
+      background: url("{% static 'image/a.jpeg' %}") no-repeat center center;
+      background-size: cover;
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 10%;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      font-weight: 900;
+      margin-bottom: 20px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .outline-text {
+      color: transparent;
+      -webkit-text-stroke: 2px white;
+      text-stroke: 2px white;
+    }
+
+    .solid-text {
+      color: white;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(13, 13, 13, 0.85);
+      z-index: -1;
+    }
+</style>
+<!-- Hero Section -->
+<div class="hero">
+  <div>
+    <h1 class="solid-text">BEST</h1>
+    <h1 class="outline-text">WEBSITE</h1>
+    <h1 class="solid-text">FOR SKILL DEVELOPMENT</h1>
+  </div>
+</div>
+<!-- Hero Section -->
+<section class="text-center py-5" style="background: url('{% static 'images/hero-bg.jpg' %}') center/cover no-repeat;">
+  <div class="container text-white d-flex flex-column justify-content-center align-items-center" style="background: rgba(0,0,0,0.6); min-height: 80vh;">
+    <h1 class="display-4 fw-bold mb-3" data-aos="fade-down">Welcome to <span class="text-success">SkillKart</span></h1>
+    <p class="lead mb-4" data-aos="fade-up">Learn. Build. Grow with our expert-led skill development platform.</p>
+    <a href="#features" class="btn btn-success btn-lg" data-aos="zoom-in">Explore Features</a>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5" style="background-color: #f8f9fa;">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold text-dark" data-aos="fade-up">Why Choose SkillKart?</h2>
+    
+    <div class="row justify-content-center g-4">
+      <div class="col-md-4" data-aos="fade-up">
+        <div class="card h-100 shadow border-0 text-center p-4">
+          <img src="{% static 'image/images.jpeg' %}" class="mx-auto mb-3" width="80" alt="Courses">
+          <h5 class="fw-semibold text-dark">📘 Wide Course Catalog</h5>
+          <p class="text-muted">Choose from a variety of tech, soft skill, and aptitude courses.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card h-100 shadow border-0 text-center p-4">
+          <img src="{% static 'image/staff.jpeg' %}" class="mx-auto mb-3" width="80" alt="Staff">
+          <h5 class="fw-semibold text-dark">🧑‍🏫 Expert Staff</h5>
+          <p class="text-muted">Courses are uploaded and managed by professionals.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card h-100 shadow border-0 text-center p-4">
+          <img src="{% static 'image/test.jpeg' %}" class="mx-auto mb-3" width="80" alt="Tests">
+          <h5 class="fw-semibold text-dark">📝 Online Tests</h5>
+          <p class="text-muted">Assess your skills with built-in test modules.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- AOS Animations -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+  once: true
+});
+</script>
+{% endblock %}
