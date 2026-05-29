@@ -1,0 +1,105 @@
+{% load static %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .card {
+    background-color: #1a1a1a;
+    color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 255, 150, 0.1);
+  }
+
+  .form-label {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+    display: block;
+    min-width: 120px;
+  }
+
+  .form-control {
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .btn-success {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 10px 30px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover {
+    background-color: #21e6a3;
+  }
+
+  .password-info {
+    font-size: 13px;
+    color: #ccc;
+    margin-top: 6px;
+  }
+</style>
+
+<div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100vh;">
+  <div class="card shadow-lg p-5 w-100" style="max-width: 500px;">
+    <h2 class="text-center mb-4 text-success">Create Account</h2>
+
+    <form method="POST" novalidate>
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="id_username" class="form-label">Username</label>
+        {{ form.username }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_email" class="form-label">Email</label>
+        {{ form.email }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_mobile" class="form-label">Mobile Number</label>
+        {{ form.mobile }}
+      </div>
+
+      <div class="form-group">
+        <label for="id_password1" class="form-label">Password</label>
+        {{ form.password1 }}
+        <small class="password-info">
+          • Minimum 8 characters<br>
+          • At least 1 number<br>
+          • At least 1 uppercase letter<br>
+          • At least 1 special character
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="id_password2" class="form-label">Confirm Password</label>
+        {{ form.password2 }}
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-success px-5">Sign Up</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

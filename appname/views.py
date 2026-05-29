@@ -18,10 +18,6 @@ def about(request):
 def contact(request):
     return render(request, 'contact.html')
 
-import os
-
-# Change it to look like this:
-TWILIO_ACCOUNT_SID = os.environ.get('your_twilio_sid')
 
 # ---------- Authentication ----------
 def login(request):
@@ -432,3 +428,162 @@ def course_detail(request, course_id):
         'enrolled': enrolled,
         'show_material': show_material,
     })
+
+
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.conf import settings
+from .forms import MessageForm
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
+
+def send_sms_and_email(request):
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['recipient_email']
+            phone = form.cleaned_data['recipient_phone']
+            message_text = form.cleaned_data['message']
+
+            # --- Send Email ---
+            try:
+                send_mail(
+                    'Notification Message',
+                    message_text,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                return render(request, 'error.html', {'message': f'Email failed: {e}'})
+
+            # --- Format phone to E.164 ---
+            formatted_phone = phone
+            if not phone.startswith('+'):
+                if len(phone) == 10:
+                    formatted_phone = '+91' + phone
+                else:
+                    formatted_phone = '+' + phone
+
+            # --- Twilio SMS Send ---
+            account_sid = 'ACb960e55996afbdfe2f2a7530d8173694'
+            auth_token = '8e78382480900ab39e700388e27141e1'
+            twilio_number = '+1415XXXXXXX'  # ✅ Replace with your actual Twilio number (not your own number)
+
+            if formatted_phone == twilio_number:
+                return render(request, 'error.html', {
+                    'message': "The 'To' and 'From' numbers cannot be the same. Please enter a different phone number."
+                })
+
+            try:
+                client = Client(account_sid, auth_token)
+                client.messages.create(
+                    body=message_text,
+                    from_=twilio_number,
+                    to=formatted_phone
+                )
+            except TwilioRestException as e:
+                return render(request, 'error.html', {'message': f'SMS failed: {e.msg}'})
+
+            return render(request, 'success.html')
+    else:
+        form = MessageForm()
+
+    return render(request, 'send_message.html', {'form': form})
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .forms import ContactForm
+from .models import ContactMessage, StudentProfile, StaffProfile
+
+@login_required
+def contact(request):
+    user = request.user
+    is_student = hasattr(user, 'studentprofile')
+    is_staff = hasattr(user, 'staffprofile')
+    is_admin = user.is_superuser  # Allow admin access too
+
+    if not (is_student or is_staff or is_admin):
+        messages.error(request, 'You are not authorized to access this page.')
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            contact_message = form.save(commit=False)
+            contact_message.user = user  # if this field exists in the model
+            contact_message.save()
+            messages.success(request, '✅ Message sent successfully!')
+            return redirect('contact')
+    else:
+        form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})
+
+
+
+from .models import ContactMessage
+
+def message_list(request):
+    messages = ContactMessage.objects.all().order_by('-submitted_at')
+    return render(request, 'message.html', {'messages': messages})
+
+
+def delete_message(request, pk):
+    message = get_object_or_404(ContactMessage, pk=pk)
+    message.delete()
+    return redirect('messages')
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages as django_messages
+from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
+from .models import ContactMessage, StudentProfile, StaffProfile
+from .forms import ReplyMessageForm
+from django.conf import settings
+
+# Admin: reply to a message
+def reply_message(request, pk):
+    msg = get_object_or_404(ContactMessage, pk=pk)
+
+    if request.method == 'POST':
+        form = ReplyMessageForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            body = form.cleaned_data['message']
+            recipient = msg.email
+
+            # Send email
+            send_mail(
+                subject,
+                body,
+                settings.DEFAULT_FROM_EMAIL,
+                [recipient],
+                fail_silently=False,
+            )
+
+            # Save reply in DB
+            msg.reply_text = body
+            msg.is_replied = True
+            msg.save()
+
+            django_messages.success(request, f"Reply sent to {recipient}")
+
+            # Redirect based on user type
+            if StudentProfile.objects.filter(user__email=recipient).exists():
+                return redirect('studentdashboard')
+            elif StaffProfile.objects.filter(user__email=recipient).exists():
+                return redirect('staffdashboard')
+            else:
+                return redirect('messages')
+
+    else:
+        form = ReplyMessageForm()
+
+    return render(request, 'reply_message.html', {'form': form, 'msg': msg})
+
+

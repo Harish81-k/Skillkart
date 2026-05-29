@@ -1,0 +1,9 @@
+<!-- templates/error.html -->
+
+{% block content %}
+<div class="container text-center mt-5">
+  <h3 class="text-danger">❌ Error</h3>
+  <p>{{ message }}</p>
+  <a href="{% url 'send_sms_and_email' %}" class="btn btn-primary mt-3">Try Again</a>
+</div>
+{% endblock %}
