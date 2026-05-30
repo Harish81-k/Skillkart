@@ -11,11 +11,7 @@ SECRET_KEY = 'django-insecure-ob^ib@u!#w1yayx@ri&a^v9ozb*8yuuylij*$x#@0c-ps&##9-
 DEBUG = True
 
 # ✅ Update with your domain for deployment
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    'skillkart-main-6746b2d.kuberns.cloud',
-]
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -120,7 +116,7 @@ TWILIO_ACCOUNT_SID = 'your_twilio_sid'
 TWILIO_AUTH_TOKEN = 'your_auth_token'
 
 
-ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['skillkart-60bm.onrender.com', 'localhost', '127.0.0.1']
 
 import os
 
