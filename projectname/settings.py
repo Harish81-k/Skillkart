@@ -121,3 +121,9 @@ TWILIO_AUTH_TOKEN = 'your_auth_token'
 
 
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
+
+import os
+
+# This reads the string we just set on Render. 
+# If it can't find it (like when you run it locally), it defaults to localhost.
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost 127.0.0.1").split(" ")
