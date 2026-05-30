@@ -10,12 +10,9 @@ SECRET_KEY = 'django-insecure-ob^ib@u!#w1yayx@ri&a^v9ozb*8yuuylij*$x#@0c-ps&##9-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ✅ Update with your domain for deployment
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    'localhost',
-    'skillkart-main-6746b2d.kuberns.cloud',
-]
+# ✅ Bypasses all DisallowedHost checks for Render deployment health checks
+ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -104,3 +101,17 @@ LOGOUT_REDIRECT_URL = 'home'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # or your SMTP provider
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'harishkota0308@gmail.com'
+EMAIL_HOST_PASSWORD = 'pcwq omad bmfm ispe'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Twilio (do not store in plain text in production!)
+TWILIO_ACCOUNT_SID = 'your_twilio_sid'
+TWILIO_AUTH_TOKEN = 'your_auth_token'
