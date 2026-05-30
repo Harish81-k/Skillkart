@@ -11,6 +11,7 @@ SECRET_KEY = 'django-insecure-ob^ib@u!#w1yayx@ri&a^v9ozb*8yuuylij*$x#@0c-ps&##9-
 DEBUG = True
 
 # ✅ Update with your domain for deployment
+ALLOWED_HOSTS = ['skillkart-60bm.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -113,8 +114,12 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Twilio (do not store in plain text in production!)
 TWILIO_ACCOUNT_SID = 'your_twilio_sid'
+<<<<<<< HEAD
 TWILIO_AUTH_TOKEN = 'your_auth_token'
 
 
 ALLOWED_HOSTS = ['skillkart-60bm.onrender.com', 'localhost', '127.0.0.1']
 
+=======
+TWILIO_AUTH_TOKEN = 'your_auth_token'
+>>>>>>> ec431cd (Clean up and fix ALLOWED_HOSTS)
